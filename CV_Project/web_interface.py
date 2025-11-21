@@ -102,13 +102,27 @@ def generar_css():
     """
     
 def construir_html(nombre, titulo, email, telefono, linkedin, perfil,
-                    cargo, empresa, fecha_exp, desc_exp,
+                    experiencia_laboral,
                     universidad, carrera, fecha_edu, skills_input, nivel_ingles):
 
     css = generar_css()
 
     # Generar la lista de skills como HTML
     skills_html = "".join([f"<span class='skill-tag'>{s}</span>" for s in skills_input])
+
+    # Generar HTML para Experiencia Laboral
+    experiencia_html = ""
+    if experiencia_laboral:
+        for exp in experiencia_laboral:
+            experiencia_html += f"""
+            <div style="margin-bottom: 15px;">
+                <p style="margin-bottom: 2px;"><strong>{exp.get('cargo', '')}</strong> — {exp.get('empresa', '')}</p>
+                <p style="margin-top: 0; color: #666; font-size: 0.9rem;"><i>{exp.get('fecha', '')}</i></p>
+                <p style="margin-top: 5px;">{exp.get('descripcion', '')}</p>
+            </div>
+            """
+    else:
+        experiencia_html = "<p>No se ha añadido experiencia laboral.</p>"
 
     body_html = f"""
     <div class="cv-container" id="cv-root">
@@ -125,9 +139,7 @@ def construir_html(nombre, titulo, email, telefono, linkedin, perfil,
 
         <div class="section">
             <div class="section-title">Experiencia Laboral</div>
-            <p><strong>{cargo}</strong> — {empresa}</p>
-            <p><i>{fecha_exp}</i></p>
-            <p>{desc_exp}</p>
+            {experiencia_html}
         </div>
 
         <div class="section">

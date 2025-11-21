@@ -62,10 +62,7 @@ def main():
         "telefono": "+52 55 1234 5678",
         "linkedin": "linkedin.com/in/juanperez",
         "perfil": "",
-        "cargo": "",
-        "empresa": "",
-        "fecha_exp": "",
-        "desc_exp": "",
+        "experiencia_laboral": [], # Lista de diccionarios
         "universidad": "",
         "carrera": "",
         "fecha_edu": "",
@@ -188,12 +185,6 @@ def main():
         st.subheader("Perfil")
         st.text_area("Resumen Profesional", key="perfil")
 
-        st.subheader("Experiencia Laboral (Última)")
-        st.text_input("Cargo", key="cargo")
-        st.text_input("Empresa", key="empresa")
-        st.text_input("Fecha", key="fecha_exp")
-        st.text_area("Descripción de tareas", key="desc_exp")
-
         st.subheader("Educación")
         st.text_input("Institución", key="universidad")
         st.text_input("Carrera", key="carrera")
@@ -205,6 +196,44 @@ def main():
                      key="nivel_ingles")
 
         submitted = st.form_submit_button("Actualizar Vista Previa")
+
+    # --- EXPERIENCIA LABORAL (Múltiples entradas) ---
+    st.sidebar.subheader("Experiencia Laboral")
+    
+    with st.sidebar.expander("➕ Agregar Experiencia"):
+        with st.form("add_exp_form"):
+            new_cargo = st.text_input("Cargo")
+            new_empresa = st.text_input("Empresa")
+            new_fecha = st.text_input("Fecha (Ej: 2020 - Presente)")
+            new_desc = st.text_area("Descripción")
+            
+            add_exp_submitted = st.form_submit_button("Agregar")
+            if add_exp_submitted:
+                if new_cargo and new_empresa:
+                    st.session_state.experiencia_laboral.append({
+                        "cargo": new_cargo,
+                        "empresa": new_empresa,
+                        "fecha": new_fecha,
+                        "descripcion": new_desc
+                    })
+                    st.rerun()
+                else:
+                    st.warning("Cargo y Empresa son obligatorios")
+
+    # Listar experiencias agregadas
+    if st.session_state.experiencia_laboral:
+        st.sidebar.write("### Experiencias agregadas:")
+        for i, exp in enumerate(st.session_state.experiencia_laboral):
+            with st.sidebar.container():
+                col_exp_text, col_exp_btn = st.columns([5, 1])
+                with col_exp_text:
+                    st.markdown(f"**{exp['cargo']}** en {exp['empresa']}")
+                with col_exp_btn:
+                    if st.button("🗑️", key=f"del_exp_{i}", help="Eliminar experiencia"):
+                        st.session_state.experiencia_laboral.pop(i)
+                        st.rerun()
+                st.sidebar.divider()
+
 
     st.sidebar.subheader("Habilidades (una por una)")
 
@@ -264,6 +293,7 @@ def main():
     }
     .delete-btn > button:hover {
         color: #ff7777 !important;
+        
     }
     </style>
     """, unsafe_allow_html=True)
@@ -295,10 +325,7 @@ def main():
         st.session_state.telefono, 
         st.session_state.linkedin,
         st.session_state.perfil, 
-        st.session_state.cargo, 
-        st.session_state.empresa, 
-        st.session_state.fecha_exp, 
-        st.session_state.desc_exp,
+        st.session_state.experiencia_laboral, 
         st.session_state.universidad, 
         st.session_state.carrera, 
         st.session_state.fecha_edu, 
