@@ -1,6 +1,8 @@
 import streamlit as st
+from utils import inject_focus_js, focus_input_by_label
 
 def render_personal_data_form():
+    inject_focus_js()
     st.sidebar.header("📝 Ingresa tus Datos")
     with st.sidebar.form("cv_form"):
         st.subheader("Datos Personales")
@@ -30,7 +32,7 @@ def render_work_experience_section():
     st.sidebar.subheader("Experiencia Laboral")
     
     with st.sidebar.expander("➕ Agregar Experiencia"):
-        with st.form("add_exp_form"):
+        with st.form("add_exp_form", clear_on_submit=True):
             new_cargo = st.text_input("Cargo")
             new_empresa = st.text_input("Empresa")
             new_fecha = st.text_input("Fecha (Ej: 2020 - Presente)")
@@ -45,7 +47,8 @@ def render_work_experience_section():
                         "fecha": new_fecha,
                         "descripcion": new_desc
                     })
-                    st.rerun()
+                    # st.rerun()  <-- Eliminado para evitar recarga completa
+                    focus_input_by_label("Cargo")
                 else:
                     st.warning("Cargo y Empresa son obligatorios")
 
@@ -66,18 +69,29 @@ def render_work_experience_section():
 def render_skills_section():
     st.sidebar.subheader("Habilidades (una por una)")
 
-    nueva_skill = st.sidebar.text_input("Nueva Skill")
+    # Callback para agregar skill
+    def add_skill_callback():
+        # Obtenemos el valor del input desde session_state
+        skill_val = st.session_state.new_skill_input
+        if skill_val and skill_val.strip():
+            st.session_state.skills_list.append(skill_val.strip())
+            # Limpiamos el input
+            st.session_state.new_skill_input = ""
+
+    # Input con callback (se ejecuta al dar Enter)
+    st.sidebar.text_input("Nueva Skill", key="new_skill_input", on_change=add_skill_callback)
 
     col1, col2 = st.sidebar.columns([1, 1])
     with col1:
-        if st.button("➕ Agregar skill"):
-            if nueva_skill.strip():
-                st.session_state.skills_list.append(nueva_skill.strip())
-                st.rerun()
+        # Botón con callback (se ejecuta al hacer click)
+        st.button("➕ Agregar skill", on_click=add_skill_callback)
 
     with col2:
         if st.button("🗑️ Borrar todas"):
             st.session_state.skills_list.clear()
+            # No necesitamos rerun explícito si usamos callbacks para lo anterior, 
+            # pero para este botón simple sí, o podríamos usar callback también.
+            # Dejamos rerun por simplicidad aquí.
             st.rerun()
 
     # CSS pequeño para ajustar la alineación y quitar viñetas
