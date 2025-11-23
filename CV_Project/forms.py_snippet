@@ -1,0 +1,37 @@
+
+def render_certifications_section():
+    st.sidebar.subheader("Certificaciones y Diplomados")
+    
+    with st.sidebar.expander("➕ Agregar Certificación"):
+        with st.form("add_cert_form", clear_on_submit=True):
+            new_cert = st.text_input("Nombre del Certificado")
+            new_entidad = st.text_input("Entidad Emisora / Plataforma")
+            new_duracion = st.text_input("Duración (Ej: 40 horas, 3 meses)")
+            new_folio = st.text_input("Folio o ID (Opcional)")
+            
+            add_cert_submitted = st.form_submit_button("Agregar")
+            if add_cert_submitted:
+                if new_cert and new_entidad:
+                    st.session_state.certificaciones.append({
+                        "nombre": new_cert,
+                        "entidad": new_entidad,
+                        "duracion": new_duracion,
+                        "folio": new_folio
+                    })
+                    focus_input_by_label("Nombre del Certificado")
+                else:
+                    st.warning("Nombre y Entidad son obligatorios")
+
+    # Listar certificaciones agregadas
+    if st.session_state.certificaciones:
+        st.sidebar.write("### Certificaciones agregadas:")
+        for i, cert in enumerate(st.session_state.certificaciones):
+            with st.sidebar.container():
+                col_cert_text, col_cert_btn = st.columns([5, 1])
+                with col_cert_text:
+                    st.markdown(f"**{cert['nombre']}** - {cert['entidad']}")
+                with col_cert_btn:
+                    if st.button("🗑️", key=f"del_cert_{i}", help="Eliminar certificación"):
+                        st.session_state.certificaciones.pop(i)
+                        st.rerun()
+                st.sidebar.divider()

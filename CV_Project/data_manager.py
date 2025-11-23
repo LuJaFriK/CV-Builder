@@ -13,7 +13,8 @@ DEFAULT_VALUES = {
     "carrera": "",
     "fecha_edu": "",
     "nivel_ingles": "B2 Intermedio",
-    "skills_list": []
+    "skills_list": [],
+    "certificaciones": []
 }
 
 def init_session_state():

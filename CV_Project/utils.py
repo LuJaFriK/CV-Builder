@@ -37,6 +37,12 @@ def inject_focus_js():
                     if (input.getAttribute("aria-label") === "Nueva Skill") {
                         return; 
                     }
+
+                    // EXCEPCIÓN: Si es el campo "Folio" del formulario de certificaciones,
+                    // queremos que el Enter envíe el formulario (comportamiento default de Streamlit).
+                    if (input.getAttribute("aria-label") === "Folio o ID (Opcional)") {
+                        return;
+                    }
                     
                     // Intento alternativo de detección si aria-label no es exacto:
                     // Verificamos si el input está dentro de un bloque que parece ser la sección de skills.

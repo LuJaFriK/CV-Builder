@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 from webUI import construir_html
 from pdf_utils import exportar_pdf
 from data_manager import init_session_state, render_save_load_section
-from forms import render_personal_data_form, render_work_experience_section, render_skills_section
+from forms import render_personal_data_form, render_work_experience_section, render_skills_section, render_certifications_section
 
 st.set_page_config(page_title="Generador de CV Profesional", layout="wide")
 
@@ -15,6 +15,7 @@ def main():
     render_save_load_section()
     render_personal_data_form()
     render_work_experience_section()
+    render_certifications_section()
     render_skills_section()
 
     # Construir HTML para vista previa
@@ -30,7 +31,8 @@ def main():
         st.session_state.universidad, 
         st.session_state.carrera, 
         st.session_state.fecha_edu, 
-        st.session_state.skills_list, 
+        st.session_state.skills_list,
+        st.session_state.certificaciones,
         st.session_state.nivel_ingles
     )
 

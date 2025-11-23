@@ -115,7 +115,7 @@ def generar_css():
     
 def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
                     experiencia_laboral,
-                    universidad, carrera, fecha_edu, skills_input, nivel_ingles):
+                    universidad, carrera, fecha_edu, skills_input, certificaciones, nivel_ingles):
 
     css = generar_css()
 
@@ -132,6 +132,18 @@ def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
 
     # Generar la lista de skills como HTML
     skills_html = "".join([f"<span class='skill-tag'>{s}</span>" for s in skills_input])
+
+    # Generar HTML para Certificaciones
+    certificaciones_html = ""
+    if certificaciones:
+        for cert in certificaciones:
+            folio_str = f" — Folio: {cert.get('folio')}" if cert.get('folio') else ""
+            certificaciones_html += f"""
+            <div style="margin-bottom: 10px;">
+                <p style="margin-bottom: 2px;"><strong>{cert.get('nombre', '')}</strong></p>
+                <p style="margin: 0; color: #555; font-size: 0.95rem;">{cert.get('entidad', '')} | {cert.get('duracion', '')}{folio_str}</p>
+            </div>
+            """
 
     # Generar HTML para Experiencia Laboral
     experiencia_html = ""
@@ -173,6 +185,13 @@ def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
             <p><i>{fecha_edu}</i></p>
         </div>
 
+        {f'''
+        <div class="section">
+            <div class="section-title">Certificaciones y Diplomados</div>
+            {certificaciones_html}
+        </div>
+        ''' if certificaciones else ''}
+
         <div class="section">
             <div class="section-title">Habilidades</div>
             <div class="skills-list">
@@ -180,10 +199,12 @@ def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
             </div>
         </div>
 
+        {f'''
         <div class="section">
             <div class="section-title">Idiomas</div>
             <p><strong>Inglés:</strong> {nivel_ingles}</p>
         </div>
+        ''' if nivel_ingles and nivel_ingles != "Ninguno" else ''}
     </div>
     """
 
