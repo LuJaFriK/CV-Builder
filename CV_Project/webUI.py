@@ -1,4 +1,5 @@
 #Las funciones que se encargan de generar el CSS y el HTML
+import base64
 
 def generar_css():
     return """
@@ -98,14 +99,36 @@ def generar_css():
         }
     }
 
+    .profile-photo {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin: 0 auto 20px auto;
+        display: block;
+        border: 4px solid #ecf0f1;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
     </style>
     """
     
-def construir_html(nombre, titulo, email, telefono, linkedin, perfil,
+def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
                     experiencia_laboral,
                     universidad, carrera, fecha_edu, skills_input, nivel_ingles):
 
     css = generar_css()
+
+    # Procesar foto si existe
+    foto_html = ""
+    if foto:
+        try:
+            # Convertir a base64
+            b64_img = base64.b64encode(foto.getvalue()).decode('utf-8')
+            mime_type = foto.type
+            foto_html = f'<img src="data:{mime_type};base64,{b64_img}" class="profile-photo" alt="Foto de Perfil">'
+        except Exception as e:
+            print(f"Error procesando imagen: {e}")
 
     # Generar la lista de skills como HTML
     skills_html = "".join([f"<span class='skill-tag'>{s}</span>" for s in skills_input])
@@ -127,6 +150,7 @@ def construir_html(nombre, titulo, email, telefono, linkedin, perfil,
     body_html = f"""
     <div class="cv-container" id="cv-root">
         <div class="header">
+            {foto_html}
             <h1>{nombre}</h1>
             <h2>{titulo}</h2>
             <p>{email} | {telefono} | {linkedin}</p>

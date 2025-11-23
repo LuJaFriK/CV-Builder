@@ -19,6 +19,7 @@ def main():
 
     # Construir HTML para vista previa
     html_content = construir_html(
+        st.session_state.foto,
         st.session_state.nombre, 
         st.session_state.titulo, 
         st.session_state.email, 

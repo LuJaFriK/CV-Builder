@@ -4,8 +4,12 @@ from utils import inject_focus_js, focus_input_by_label
 def render_personal_data_form():
     inject_focus_js()
     st.sidebar.header("📝 Ingresa tus Datos")
+    
+    st.sidebar.subheader("Datos Personales")
+    # Foto fuera del form para que actualice al momento
+    st.sidebar.file_uploader("Foto de Perfil (Opcional)", type=['png', 'jpg', 'jpeg'], key="foto")
+
     with st.sidebar.form("cv_form"):
-        st.subheader("Datos Personales")
         # Usamos key= para vincular con session_state
         st.text_input("Nombre Completo", key="nombre")
         st.text_input("Título Profesional", key="titulo")
