@@ -28,58 +28,10 @@ def render_save_load_section():
     with st.sidebar.expander("💾 Guardar / Cargar Progreso"):
         
         # CSS Hack para ocultar la zona de "Drag and drop" visualmente
-        st.markdown("""
-            <style>
-                /* Contenedor principal del uploader */
-                [data-testid='stFileUploader'] {
-                    width: 100% !important;
-                }
-                [data-testid='stFileUploader'] section {
-                    padding: 0 !important;
-                    min-height: 0 !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    width: 100% !important;
-                    background-color: transparent !important;
-                }
-                /* El div interno que contiene el botón y el icono */
-                [data-testid='stFileUploader'] section > div {
-                    display: flex !important;
-                    flex-direction: column !important;
-                    align-items: stretch !important; /* Estirar hijos para que ocupen todo el ancho */
-                    justify-content: center !important;
-                    width: 100% !important;
-                    padding: 10px !important;
-                    height: auto !important;
-                }
-                /* Ocultar textos default */
-                [data-testid='stFileUploader'] section > div > div > span,
-                [data-testid='stFileUploader'] section > div > div > small {
-                    display: none !important;
-                }
-                /* Estilo para el nombre del archivo cargado */
-                [data-testid='stFileUploader'] section > div > div {
-                    text-align: center !important;
-                    margin-top: 5px !important;
-                }
-
-                /* Botón "Browse files" */
-                [data-testid='stFileUploader'] section button {
-                    width: 100% !important; /* Ancho completo */
-                    height: auto !important;
-                    margin: 0 !important;
-                    padding: 0.5rem 1rem !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                }
-                /* Icono (SVG) - OCULTO */
-                [data-testid='stFileUploader'] section svg {
-                    display: none !important;
-                }
-            </style>
-        """, unsafe_allow_html=True)
+        # Cargar estilos desde archivo externo
+        from utils import load_file_content
+        css_content = load_file_content("styles.css")
+        st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
         # --- GUARDAR (Descargar Binario) ---
         cv_data = {key: st.session_state[key] for key in DEFAULT_VALUES.keys()}

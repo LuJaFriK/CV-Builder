@@ -5,11 +5,11 @@ def render_personal_data_form():
     inject_focus_js()
     st.sidebar.header("📝 Ingresa tus Datos")
 
+    with st.sidebar.expander("📸 Foto de Perfil"):
+        st.file_uploader("Subir foto (Opcional)", type=['png', 'jpg', 'jpeg'], key="foto")
+
     with st.sidebar.form("cv_form"):
         st.subheader("Datos Personales")
-        
-        with st.expander("📸 Foto de Perfil"):
-            st.file_uploader("Subir foto (Opcional)", type=['png', 'jpg', 'jpeg'], key="foto")
 
         # Usamos key= para vincular con session_state
         st.text_input("Nombre Completo", key="nombre")
@@ -26,12 +26,12 @@ def render_personal_data_form():
         st.text_input("Carrera", key="carrera")
         st.text_input("Año de Graduación", key="fecha_edu")
 
-        st.subheader("Nivel de Inglés")
-        st.selectbox("Selecciona una opción", 
-                     ["Ninguno", "A1 Principiante", "A2 Básico", "B1 Intermedio", "B2 Intermedio", "C1 Avanzado", "C2 Nativo"],
-                     key="nivel_ingles")
-
         st.form_submit_button("Actualizar Vista Previa")
+
+    st.sidebar.subheader("Nivel de Inglés")
+    st.sidebar.selectbox("Selecciona una opción", 
+                    ["Ninguno", "A1 Principiante", "A2 Básico", "B1 Intermedio", "B2 Intermedio", "C1 Avanzado", "C2 Nativo"],
+                    key="nivel_ingles")
 
 def render_work_experience_section():
     st.sidebar.subheader("Experiencia Laboral")
@@ -101,52 +101,13 @@ def render_skills_section():
                 st.rerun()
 
     # CSS pequeño para ajustar la alineación y quitar viñetas
-    st.sidebar.markdown(
-        """
-        <style>
-        /* Evitar que aparezcan viñetas en markdown dentro del sidebar */
-        .skill-text { list-style: none; padding: 8px 0; margin: 0; display: flex; align-items: center; }
-        .skill-text p { margin: 0; padding-left: 6px; }
-        /* Forzar un gap razonable entre texto y botón en dispositivos pequeños */
-        .stButton button { min-width: 36px; height: 36px; }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    # Cargar estilos desde archivo externo
+    from utils import load_file_content
+    css_content = load_file_content("styles.css")
+    st.sidebar.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
     if st.session_state.skills_list:
         st.sidebar.write("### Skills agregadas:")
-
-        # CSS para alinear y estilizar
-        st.sidebar.markdown("""
-        <style>
-        .skill-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 4px;
-            background-color: rgba(255,255,255,0.05);
-            border-radius: 6px;
-            margin-bottom: 6px;
-        }
-        .skill-text {
-            font-size: 15px;
-            margin: 0;
-        }
-        .delete-btn > button {
-            background: none !important;
-            color: #ff4b4b !important;
-            border: none !important;
-            padding: 0 !important;
-            font-size: 18px !important;
-            font-weight: bold !important;
-        }
-        .delete-btn > button:hover {
-            color: #ff7777 !important;
-            
-        }
-        </style>
-        """, unsafe_allow_html=True)
 
         for i, skill in enumerate(st.session_state.skills_list):
 

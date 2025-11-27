@@ -1,0 +1,82 @@
+/* Estilos para el File Uploader (data_manager.py) */
+/* Contenedor principal del uploader */
+[data-testid='stFileUploader'] {
+    width: 100% !important;
+}
+[data-testid='stFileUploader'] section {
+    padding: 0 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    background-color: transparent !important;
+}
+/* El div interno que contiene el botón y el icono */
+[data-testid='stFileUploader'] section > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important; /* Estirar hijos para que ocupen todo el ancho */
+    justify-content: center !important;
+    width: 100% !important;
+    padding: 10px !important;
+    height: auto !important;
+}
+/* Ocultar textos default */
+[data-testid='stFileUploader'] section > div > div > span,
+[data-testid='stFileUploader'] section > div > div > small {
+    display: none !important;
+}
+/* Estilo para el nombre del archivo cargado */
+[data-testid='stFileUploader'] section > div > div {
+    text-align: center !important;
+    margin-top: 5px !important;
+}
+
+/* Botón "Browse files" */
+[data-testid='stFileUploader'] section button {
+    width: 100% !important; /* Ancho completo */
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0.5rem 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+/* Icono (SVG) - OCULTO */
+[data-testid='stFileUploader'] section svg {
+    display: none !important;
+}
+
+/* Estilos para la sección de Skills (forms.py) */
+/* Evitar que aparezcan viñetas en markdown dentro del sidebar */
+.skill-text { list-style: none; padding: 8px 0; margin: 0; display: flex; align-items: center; }
+.skill-text p { margin: 0; padding-left: 6px; }
+/* Forzar un gap razonable entre texto y botón en dispositivos pequeños */
+.stButton button { min-width: 36px; height: 36px; }
+
+.skill-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px;
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+.skill-text {
+    font-size: 15px;
+    margin: 0;
+}
+.delete-btn > button {
+    background: none !important;
+    color: #ff4b4b !important;
+    border: none !important;
+    padding: 0 !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+}
+.delete-btn > button:hover {
+    color: #ff7777 !important;
+    
+}
