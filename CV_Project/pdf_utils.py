@@ -10,7 +10,12 @@ def exportar_pdf(html_content):
     # Opciones para wkhtmltopdf
     options = {
         'encoding': "UTF-8",
-        'enable-local-file-access': None
+        'enable-local-file-access': None,
+        'disable-smart-shrinking': None,
+        'margin-top': '0mm',
+        'margin-right': '0mm',
+        'margin-bottom': '0mm',
+        'margin-left': '0mm'
     }
     
     # Retornar bytes directamente
