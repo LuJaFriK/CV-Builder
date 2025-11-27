@@ -1,5 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import os
 from webUI import construir_html
 from pdf_utils import exportar_pdf
 from data_manager import init_session_state, render_save_load_section
@@ -21,18 +22,28 @@ def main():
     # Selector de Diseño
     st.sidebar.markdown("---")
     st.sidebar.header("Diseño del CV")
+    
+    # Detectar templates dinámicamente
+    templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+    # Listar archivos .html y quitar la extensión para el nombre
+    available_templates = [f.replace('.html', '') for f in os.listdir(templates_dir) if f.endswith('.html')]
+    # Ordenar alfabéticamente
+    available_templates.sort()
+    
+    # Asegurar que 'classic' esté primero si existe, o usar el primero de la lista
+    default_index = 0
+    if 'classic' in available_templates:
+        default_index = available_templates.index('classic')
+        
     template_option = st.sidebar.selectbox(
         "Elige una plantilla",
-        ("Clásico", "Moderno"),
-        index=0
+        available_templates,
+        index=default_index,
+        format_func=lambda x: x.capitalize() # Mostrar nombres capitalizados (ej. classic -> Classic)
     )
     
-    # Mapeo de nombre legible a nombre de archivo
-    template_map = {
-        "Clásico": "classic",
-        "Moderno": "modern"
-    }
-    selected_template = template_map.get(template_option, "classic")
+    # El nombre del archivo es el mismo que la opción (en minúsculas)
+    selected_template = template_option
 
     # Construir HTML para vista previa
     html_content = construir_html(
