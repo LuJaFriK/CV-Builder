@@ -1,247 +1,45 @@
 #Las funciones que se encargan de generar el CSS y el HTML
 import base64
+import os
+from jinja2 import Environment, FileSystemLoader
 
-def generar_css():
-    return """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
-    html, body {
-        margin: 0;
-        padding: 0;
-        background: #f0f2f6;
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .cv-container {
-        color: #333;
-        max-width: 850px;
-        margin: 30px auto;
-        background: white;
-        box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        padding: 40px;
-        border-radius: 10px;
-    }
-
-    .header { 
-        text-align: center; 
-        border-bottom: 2px solid #2c3e50;
-        padding-bottom: 20px; 
-        margin-bottom: 30px;
-    }
-
-    .header h1 { 
-        margin: 0; 
-        color: #2c3e50; 
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 2rem;
-    }
-
-    .header h2 {
-        margin-top: 5px;
-        color: #444;
-        font-size: 1.1rem;
-        font-weight: 400;
-    }
-
-    .section-title {
-        color: #2c3e50;
-        border-left: 5px solid #3498db;
-        padding-left: 10px;
-        margin-top: 25px;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 1.05rem;
-    }
-
-    .skills-list {
-        display: flex;
-        flex-wrap: wrap;
-        /* gap: 10px;  <-- wkhtmltopdf no soporta gap muy bien */
-        margin-top: 10px;
-    }
-
-    .skill-tag {
-        background: #ecf0f1;
-        color: #2c3e50;
-        padding: 5px 12px;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin: 5px; /* Usamos margin para separar */
-    }
-
-    @media print {
-        @page { margin: 0; }
-        body, html {
-            background: white !important;
-        }
-        .cv-container {
-            box-shadow: none !important;
-            width: 100% !important;
-            padding: 20px !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-        }
-    }
-
-    @media print {
-        body {
-            background: white !important;
-        }   
-
-        .cv-container {
-            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* mantener recuadro */
-            margin: auto !important;
-            transform: scale(1);
-        }
-    }
-
-    .profile-photo {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 50%;
-        margin: 0 auto 20px auto;
-        display: block;
-        border: 4px solid #ecf0f1;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    </style>
-    """
-    
 def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
                     experiencia_laboral,
                     universidad, carrera, fecha_edu, skills_input, certificaciones, nivel_ingles):
 
-    css = generar_css()
-
     # Procesar foto si existe
-    foto_html = ""
+    foto_url = ""
     if foto:
         try:
             # Convertir a base64
             b64_img = base64.b64encode(foto.getvalue()).decode('utf-8')
             mime_type = foto.type
-            foto_html = f'<img src="data:{mime_type};base64,{b64_img}" class="profile-photo" alt="Foto de Perfil">'
+            foto_url = f"data:{mime_type};base64,{b64_img}"
         except Exception as e:
             print(f"Error procesando imagen: {e}")
 
-    # Generar la lista de skills como HTML
-    skills_html = "".join([f"<span class='skill-tag'>{s}</span>" for s in skills_input])
+    # Configurar Jinja2
+    # Asumimos que el template está en el mismo directorio que este script
+    template_dir = os.path.dirname(os.path.abspath(__file__))
+    env = Environment(loader=FileSystemLoader(template_dir))
+    template = env.get_template('cv_template.html')
 
-    # Generar HTML para Certificaciones
-    certificaciones_html = ""
-    if certificaciones:
-        for cert in certificaciones:
-            folio_str = f" — Folio: {cert.get('folio')}" if cert.get('folio') else ""
-            certificaciones_html += f"""
-            <div style="margin-bottom: 10px;">
-                <p style="margin-bottom: 2px;"><strong>{cert.get('nombre', '')}</strong></p>
-                <p style="margin: 0; color: #555; font-size: 0.95rem;">{cert.get('entidad', '')} | {cert.get('duracion', '')}{folio_str}</p>
-            </div>
-            """
+    # Renderizar el template
+    html_content = template.render(
+        foto_url=foto_url,
+        nombre=nombre,
+        titulo=titulo,
+        email=email,
+        telefono=telefono,
+        linkedin=linkedin,
+        perfil=perfil,
+        experiencia_laboral=experiencia_laboral,
+        universidad=universidad,
+        carrera=carrera,
+        fecha_edu=fecha_edu,
+        skills_input=skills_input,
+        certificaciones=certificaciones,
+        nivel_ingles=nivel_ingles
+    )
 
-    # Generar HTML para Experiencia Laboral
-    experiencia_html = ""
-    if experiencia_laboral:
-        for exp in experiencia_laboral:
-            experiencia_html += f"""
-            <div style="margin-bottom: 15px;">
-                <p style="margin-bottom: 2px;"><strong>{exp.get('cargo', '')}</strong> — {exp.get('empresa', '')}</p>
-                <p style="margin-top: 0; color: #666; font-size: 0.9rem;"><i>{exp.get('fecha', '')}</i></p>
-                <p style="margin-top: 5px;">{exp.get('descripcion', '')}</p>
-            </div>
-            """
-    else:
-        experiencia_html = "<p>No se ha añadido experiencia laboral.</p>"
-
-    body_html = f"""
-    <div class="cv-container" id="cv-root">
-        <div class="header">
-            {foto_html}
-            <h1>{nombre}</h1>
-            <h2>{titulo}</h2>
-            <p>{email} | {telefono} | {linkedin}</p>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Perfil Profesional</div>
-            <p>{perfil}</p>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Experiencia Laboral</div>
-            {experiencia_html}
-        </div>
-
-        <div class="section">
-            <div class="section-title">Educación</div>
-            <p><strong>{carrera}</strong></p>
-            <p>{universidad}</p>
-            <p><i>{fecha_edu}</i></p>
-        </div>
-
-        {f'''
-        <div class="section">
-            <div class="section-title">Certificaciones y Diplomados</div>
-            {certificaciones_html}
-        </div>
-        ''' if certificaciones else ''}
-
-        <div class="section">
-            <div class="section-title">Habilidades</div>
-            <div class="skills-list">
-                {skills_html}
-            </div>
-        </div>
-
-        {f'''
-        <div class="section">
-            <div class="section-title">Idiomas</div>
-            <p><strong>Inglés:</strong> {nivel_ingles}</p>
-        </div>
-        ''' if nivel_ingles and nivel_ingles != "Ninguno" else ''}
-    </div>
-    """
-
-    # Wrapper completo con script para ajustar la altura del iframe
-    full_html = f"""<!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        {css}
-      </head>
-      <body>
-        {body_html}
-
-        <script>
-          function sendHeight() {{
-            const height = document.documentElement.scrollHeight || document.body.scrollHeight;
-            // Enviar mensaje al iframe padre (Streamlit) para ajustar altura
-            window.parent.postMessage({{ "type": "setHeight", "height": height }}, "*");
-          }}
-
-          // Enviar altura inicial y cuando cambie el contenido
-          window.addEventListener("load", function() {{
-            sendHeight();
-            // Observador para cambios dinámicos
-            const ro = new ResizeObserver(sendHeight);
-            ro.observe(document.body);
-          }});
-          // También reenviamos altura cada 300ms los primeros segundos por si hay fuentes que cargan tarde
-          let tries = 0;
-          const interval = setInterval(function() {{
-            sendHeight();
-            tries++;
-            if (tries > 20) clearInterval(interval);
-          }}, 300);
-        </script>
-      </body>
-    </html>
-    """
-    return full_html
+    return html_content
