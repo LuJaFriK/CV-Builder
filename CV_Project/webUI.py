@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 
 def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
                     experiencia_laboral,
-                    universidad, carrera, fecha_edu, skills_input, certificaciones, nivel_ingles):
+                    universidad, carrera, fecha_edu, skills_input, certificaciones, nivel_ingles, template_name="classic"):
 
     # Procesar foto si existe
     foto_url = ""
@@ -19,10 +19,16 @@ def construir_html(foto, nombre, titulo, email, telefono, linkedin, perfil,
             print(f"Error procesando imagen: {e}")
 
     # Configurar Jinja2
-    # Asumimos que el template está en el mismo directorio que este script
-    template_dir = os.path.dirname(os.path.abspath(__file__))
+    # El directorio de templates es 'templates' dentro del directorio actual
+    template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
     env = Environment(loader=FileSystemLoader(template_dir))
-    template = env.get_template('cv_template.html')
+    
+    # Cargar el template seleccionado
+    try:
+        template = env.get_template(f"{template_name}.html")
+    except Exception:
+        # Fallback a classic si no existe
+        template = env.get_template("classic.html")
 
     # Renderizar el template
     html_content = template.render(

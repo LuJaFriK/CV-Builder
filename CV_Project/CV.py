@@ -18,6 +18,22 @@ def main():
     render_certifications_section()
     render_skills_section()
 
+    # Selector de Diseño
+    st.sidebar.markdown("---")
+    st.sidebar.header("Diseño del CV")
+    template_option = st.sidebar.selectbox(
+        "Elige una plantilla",
+        ("Clásico", "Moderno"),
+        index=0
+    )
+    
+    # Mapeo de nombre legible a nombre de archivo
+    template_map = {
+        "Clásico": "classic",
+        "Moderno": "modern"
+    }
+    selected_template = template_map.get(template_option, "classic")
+
     # Construir HTML para vista previa
     html_content = construir_html(
         st.session_state.foto,
@@ -33,7 +49,8 @@ def main():
         st.session_state.fecha_edu, 
         st.session_state.skills_list,
         st.session_state.certificaciones,
-        st.session_state.nivel_ingles
+        st.session_state.nivel_ingles,
+        template_name=selected_template
     )
 
     st.title("Vista Previa de tu CV")

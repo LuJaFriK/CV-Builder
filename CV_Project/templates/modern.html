@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap'); */
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f2f6;
+            font-family: "Roboto", sans-serif;
+            height: 100%;
+        }
+
+        /* Table Layout Reset */
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .cv-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Sidebar Styles */
+        .sidebar-content {
+            padding: 30px 20px;
+            color: white;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: block;
+            border: 4px solid #34495e;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+            text-align: center;
+            line-height: 1.2;
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            font-weight: 300;
+            margin: 0 0 30px 0;
+            text-align: center;
+            color: #bdc3c7;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid #7f8c8d;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: white;
+        }
+
+        .contact-info p {
+            margin: 10px 0;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            color: white;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #34495e;
+            color: #ecf0f1;
+            padding: 4px 8px;
+            margin: 3px 0;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        /* Main Content Styles */
+        .main-content-wrapper {
+            padding: 40px;
+            color: #333;
+        }
+
+        .main-section {
+            margin-bottom: 30px;
+        }
+
+        .main-title {
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .job-item {
+            margin-bottom: 20px;
+        }
+
+        .job-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .company-name {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .job-date {
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 0 0 10px 0;
+        }
+
+        .job-desc {
+            line-height: 1.5;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        @media print {
+            @page {
+                margin: 0;
+            }
+
+            body {
+                background: white;
+            }
+
+            .cv-container {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <table class="cv-container" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <!-- Sidebar Column -->
+            <td width="35%" bgcolor="#2c3e50" valign="top">
+                <div class="sidebar-content">
+                    {% if foto_url %}
+                    <img src="{{ foto_url }}" class="profile-photo" alt="Foto">
+                    {% endif %}
+
+                    <div class="sidebar-header">
+                        <h1>{{ nombre }}</h1>
+                        <h2>{{ titulo }}</h2>
+                    </div>
+
+                    <div class="sidebar-section contact-info">
+                        <div class="sidebar-title">Contacto</div>
+
+                        {% if email %}
+                        <div>
+                            <span class="contact-label">Email</span>
+                            <p>{{ email | safe }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if telefono %}
+                        <div>
+                            <span class="contact-label">Teléfono</span>
+                            <p>{{ telefono }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if linkedin %}
+                        <div>
+                            <span class="contact-label">LinkedIn</span>
+                            <p>{{ linkedin }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">Habilidades</div>
+                        {% for skill in skills_input %}
+                        <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+
+                    {% if nivel_ingles and nivel_ingles != "Ninguno" %}
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">Idiomas</div>
+                        <p style="color: white;"><strong>Inglés:</strong> {{ nivel_ingles }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+
+            <!-- Main Content Column -->
+            <td width="65%" bgcolor="#ffffff" valign="top">
+                <div class="main-content-wrapper">
+                    <div class="main-section">
+                        <div class="main-title">Perfil Profesional</div>
+                        <p style="line-height: 1.6;">{{ perfil }}</p>
+                    </div>
+
+                    <div class="main-section">
+                        <div class="main-title">Experiencia Laboral</div>
+                        {% if experiencia_laboral %}
+                        {% for exp in experiencia_laboral %}
+                        <div class="job-item">
+                            <p class="job-title">{{ exp.cargo }}</p>
+                            <p class="company-name">{{ exp.empresa }}</p>
+                            <p class="job-date">{{ exp.fecha }}</p>
+                            <p class="job-desc">{{ exp.descripcion }}</p>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p>No se ha añadido experiencia laboral.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="main-section">
+                        <div class="main-title">Educación</div>
+                        <div class="edu-item">
+                            <p style="font-weight: bold; font-size: 1.1rem; color: #2c3e50; margin: 5px 0;">{{ carrera
+                                }}</p>
+                            <p style="color: #3498db; font-weight: bold; margin: 5px 0;">{{ universidad }}</p>
+                            <p style="font-style: italic; color: #7f8c8d; margin: 5px 0;">{{ fecha_edu }}</p>
+                        </div>
+                    </div>
+
+                    {% if certificaciones %}
+                    <div class="main-section">
+                        <div class="main-title">Certificaciones</div>
+                        {% for cert in certificaciones %}
+                        <div style="margin-bottom: 15px;">
+                            <p style="font-weight: bold; margin-bottom: 2px;">{{ cert.nombre }}</p>
+                            <p style="margin: 0; color: #555; font-size: 0.9rem;">
+                                {{ cert.entidad }} | {{ cert.duracion }}
+                                {% if cert.folio %} — Folio: {{ cert.folio }}{% endif %}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    </table>
+    <script>
+        function sendHeight() {
+            const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+            window.parent.postMessage({ "type": "setHeight", "height": height }, "*");
+        }
+        window.addEventListener("load", function () {
+            sendHeight();
+            const ro = new ResizeObserver(sendHeight);
+            ro.observe(document.body);
+        });
+    </script>
+</body>
+
+</html>
