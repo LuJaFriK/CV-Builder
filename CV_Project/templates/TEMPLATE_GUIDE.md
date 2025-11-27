@@ -17,7 +17,14 @@ El sistema utiliza `wkhtmltopdf` para generar los PDFs. Este motor es antiguo y 
 *   **OBLIGATORIO**: Usar fuentes del sistema estándar.
     *   Stack recomendado: `font-family: "Roboto", "Segoe UI", Helvetica, Arial, sans-serif;`
 
-### 3. CSS
+### 3. Diseño de Página Completa (Full Page Layout)
+Para evitar que el documento se vea "cortado" o con espacios en blanco extraños al final de la hoja en el PDF:
+*   **HTML/Body**: Asegúrate de establecer `height: 100%` en `html` y `body`.
+*   **Contenedor Principal**:
+    *   Si usas tablas: `<table height="100%">` y en las celdas `<td height="100%">`.
+    *   Si usas divs (solo para layouts simples de una columna): `min-height: 100vh`.
+
+### 4. CSS
 *   Puedes usar CSS moderno para estilos de texto (colores, tamaños, negritas), padding y margin dentro de los bloques.
 *   Evita `gap`, `transform`, o animaciones complejas.
 

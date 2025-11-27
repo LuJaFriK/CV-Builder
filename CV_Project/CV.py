@@ -30,9 +30,11 @@ def main():
     # Ordenar alfabéticamente
     available_templates.sort()
     
-    # Asegurar que 'classic' esté primero si existe, o usar el primero de la lista
+    # Asegurar que 'modern' esté seleccionado por defecto si existe
     default_index = 0
-    if 'classic' in available_templates:
+    if 'modern' in available_templates:
+        default_index = available_templates.index('modern')
+    elif 'classic' in available_templates:
         default_index = available_templates.index('classic')
         
     template_option = st.sidebar.selectbox(
