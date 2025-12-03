@@ -1,0 +1,435 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Roboto", "Segoe UI", Helvetica, Arial, sans-serif;
+            background: #f0f2f6;
+            /* Background for the window, not the CV */
+            height: 100%;
+        }
+
+        /* Container to simulate A4 paper on screen */
+        .cv-container {
+            width: 100%;
+            max-width: 900px;
+            /* Standard width for CVs in this app */
+            margin: 30px auto;
+            /* Old WebKit (Safari 4+, Chrome 1-9) */
+            background: -webkit-gradient(linear, left top, right top, color-stop(32%, #eaebef), color-stop(32%, #ffffff));
+            /* Newer WebKit (Chrome 10+, Safari 5.1+) */
+            background: -webkit-linear-gradient(left, #eaebef 32%, #ffffff 32%);
+            /* Standard */
+            background: linear-gradient(to right, #eaebef 32%, #ffffff 32%);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+            min-height: 100vh;
+            /* Ensure it takes at least full height */
+        }
+
+        /* Reset tables */
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            /* Try to fill container */
+        }
+
+        td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        /* Header */
+        .header-row td {
+            background-color: #1a3672;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .header-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 0;
+            /* Opacity removed to prevent rasterization */
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Sidebar (Left Column) */
+        .sidebar-cell {
+            padding: 30px;
+            color: #333;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-heading {
+            color: #1a3672;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        /* Contact */
+        .contact-item {
+            margin-bottom: 10px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .contact-label {
+            font-weight: bold;
+            display: block;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 2px;
+        }
+
+        /* Skills */
+        .skill-badge {
+            display: inline-block;
+            background-color: #4a90e2;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin: 0 5px 8px 0;
+            font-weight: 500;
+        }
+
+        /* Education in Sidebar */
+        .edu-item {
+            margin-bottom: 15px;
+        }
+
+        .edu-degree {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            margin: 0 0 2px 0;
+        }
+
+        .edu-school {
+            font-size: 13px;
+            color: #555;
+            margin: 0 0 2px 0;
+        }
+
+        .edu-date {
+            font-size: 12px;
+            color: #777;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Main Content (Right Column) */
+        .main-cell {
+            padding: 40px;
+            color: #333;
+        }
+
+        .main-section {
+            margin-bottom: 35px;
+        }
+
+        .main-heading {
+            color: #1a3672;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .main-heading::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background-color: #4a90e2;
+            margin-top: 8px;
+        }
+
+        /* Summary */
+        .summary-text {
+            line-height: 1.6;
+            font-size: 14px;
+            color: #444;
+            text-align: justify;
+        }
+
+        /* Experience */
+        .job-item {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        /* Timeline dot simulation with border-left if needed, but keeping it simple for PDF safety */
+        .job-header-table {
+            width: 100%;
+            margin-bottom: 5px;
+            background: transparent;
+            /* Ensure no background */
+            border: none;
+        }
+
+        .job-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a3672;
+            background: transparent;
+            /* Ensure no background */
+        }
+
+        .job-date {
+            text-align: right;
+            font-size: 13px;
+            color: #777;
+            font-weight: 500;
+        }
+
+        .job-company {
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .job-desc {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+            margin: 0;
+        }
+
+        /* Certifications */
+        .cert-item {
+            margin-bottom: 10px;
+        }
+
+        .cert-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .cert-details {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Print adjustments */
+        @media print {
+            @page {
+                margin: 0cm;
+            }
+
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+                /* Apply gradient to body to cover full page height regardless of content */
+                background: -webkit-gradient(linear, left top, right top, color-stop(32%, #eaebef), color-stop(32%, #ffffff)) !important;
+                background: -webkit-linear-gradient(left, #eaebef 32%, #ffffff 32%) !important;
+                background: linear-gradient(to right, #eaebef 32%, #ffffff 32%) !important;
+            }
+
+            .cv-container {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                box-shadow: none;
+                min-height: 29.7cm;
+                /* Force full A4 height */
+                height: auto;
+                background: transparent !important;
+                /* Let body gradient show through */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cv-container">
+        <table width="100%" height="100%" cellpadding="0" cellspacing="0">
+            <!-- Header Row -->
+            <tr class="header-row">
+                <td colspan="2">
+                    <table width="100%">
+                        <tr>
+                            <td valign="middle">
+                                <h1 class="header-name">{{ nombre }}</h1>
+                                <p class="header-title">{{ titulo }}</p>
+                            </td>
+                            <td width="150" align="right" valign="middle">
+                                {% if foto_url %}
+                                <img src="{{ foto_url }}" class="profile-photo" alt="Profile">
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Content Row -->
+            <tr>
+                <!-- Left Sidebar -->
+                <td width="32%" class="sidebar-cell">
+
+                    <!-- Contact -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">Contacto</div>
+
+                        {% if email %}
+                        <div class="contact-item">
+                            <span class="contact-label">Email</span>
+                            {{ email | safe }}
+                        </div>
+                        {% endif %}
+
+                        {% if telefono %}
+                        <div class="contact-item">
+                            <span class="contact-label">Teléfono</span>
+                            {{ telefono }}
+                        </div>
+                        {% endif %}
+
+                        {% if linkedin %}
+                        <div class="contact-item">
+                            <span class="contact-label">LinkedIn</span>
+                            {{ linkedin }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Skills -->
+                    {% if skills_input %}
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">Habilidades</div>
+                        <div>
+                            {% for skill in skills_input %}
+                            <span class="skill-badge">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Education (Moved to Sidebar) -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">Educación</div>
+                        <div class="edu-item">
+                            <p class="edu-degree">{{ carrera }}</p>
+                            <p class="edu-school">{{ universidad }}</p>
+                            <p class="edu-date">{{ fecha_edu }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Languages -->
+                    {% if nivel_ingles and nivel_ingles != "Ninguno" %}
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">Idiomas</div>
+                        <div class="contact-item">
+                            <span class="contact-label">Inglés</span>
+                            {{ nivel_ingles }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </td>
+
+                <!-- Right Main Content -->
+                <td width="68%" class="main-cell">
+
+                    <!-- Summary -->
+                    {% if perfil %}
+                    <div class="main-section">
+                        <div class="main-heading">Resumen</div>
+                        <div class="summary-text">
+                            {{ perfil }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Experience -->
+                    <div class="main-section">
+                        <div class="main-heading">Experiencia</div>
+                        {% if experiencia_laboral %}
+                        {% for exp in experiencia_laboral %}
+                        <div class="job-item">
+                            <table class="job-header-table">
+                                <tr>
+                                    <td class="job-title">{{ exp.cargo }}</td>
+                                    <td class="job-date" width="120">{{ exp.fecha }}</td>
+                                </tr>
+                            </table>
+                            <div class="job-company">{{ exp.empresa }}</div>
+                            <div class="job-desc">{{ exp.descripcion }}</div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p>No se ha añadido experiencia laboral.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Certifications (Optional) -->
+                    {% if certificaciones %}
+                    <div class="main-section">
+                        <div class="main-heading">Certificaciones</div>
+                        {% for cert in certificaciones %}
+                        <div class="cert-item">
+                            <div class="cert-name">{{ cert.nombre }}</div>
+                            <div class="cert-details">
+                                {{ cert.entidad }} | {{ cert.duracion }}
+                                {% if cert.folio %} — Folio: {{ cert.folio }}{% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function sendHeight() {
+            const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+            window.parent.postMessage({ "type": "setHeight", "height": height }, "*");
+        }
+        window.addEventListener("load", function () {
+            sendHeight();
+            const ro = new ResizeObserver(sendHeight);
+            ro.observe(document.body);
+        });
+    </script>
+</body>
+
+</html>

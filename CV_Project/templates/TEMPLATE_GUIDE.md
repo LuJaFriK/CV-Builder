@@ -18,11 +18,65 @@ El sistema utiliza `wkhtmltopdf` para generar los PDFs. Este motor es antiguo y 
     *   Stack recomendado: `font-family: "Roboto", "Segoe UI", Helvetica, Arial, sans-serif;`
 
 ### 3. Diseño de Página Completa (Full Page Layout)
-Para evitar que el documento se vea "cortado" o con espacios en blanco extraños al final de la hoja en el PDF:
+Para evitar que el documento se vea "cortado" o con espacios en blanco extraños al final de la hoja en el PDF, y para asegurar que se vea bien en pantalla:
+
 *   **HTML/Body**: Asegúrate de establecer `height: 100%` en `html` y `body`.
 *   **Contenedor Principal**:
-    *   Si usas tablas: `<table height="100%">` y en las celdas `<td height="100%">`.
-    *   Si usas divs (solo para layouts simples de una columna): `min-height: 100vh`.
+    *   Debes envolver todo tu contenido (incluyendo la tabla principal) en un `div` con clase `.cv-container`.
+    *   Estilos requeridos para `.cv-container`:
+        ```css
+        .cv-container {
+            width: 100%;
+            max-width: 900px; /* O 850px. Importante para que no se vea "estirado" en monitores anchos */
+            margin: 0 auto;   /* Para centrarlo */
+            
+            /* TRUCO: Gradiente Robusto (Compatible con wkhtmltopdf antiguo) */
+            background-color: white;
+            /* Old WebKit (Safari 4+, Chrome 1-9) - CRÍTICO para wkhtmltopdf */
+            background: -webkit-gradient(linear, left top, right top, color-stop(30%, #eaebef), color-stop(30%, #ffffff));
+            /* Newer WebKit */
+            background: -webkit-linear-gradient(left, #eaebef 30%, #ffffff 30%);
+            /* Standard */
+            background: linear-gradient(to right, #eaebef 30%, #ffffff 30%);
+            
+            min-height: 100vh; 
+        }
+        
+        /* Asegúrate de que las celdas de la tabla NO tengan background-color para que se vea el gradiente */
+        .sidebar-cell, .main-cell {
+            background: transparent;
+        }
+
+        /* TRUCO: Tablas Anidadas Transparentes */
+        /* Si anidas tablas (ej. para experiencia laboral), asegúrate de que no tengan fondo */
+        .job-header-table, .job-title {
+            background: transparent;
+        }
+        ```
+    *   **Evita `opacity` en textos**: Puede causar que `wkhtmltopdf` rasterice el texto.
+    *   **Excepción para PDF (@media print)**:
+        *   **CRÍTICO**: Usa `@page { margin: 0cm; }` para eliminar márgenes de impresora.
+        *   Aplica el gradiente al `body` para asegurar que cubra toda la hoja ("hasta el suelo").
+        *   Haz el contenedor transparente.
+        ```css
+        @media print {
+            @page { margin: 0cm; }
+            html, body { 
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                /* Gradiente en el body para cubrir toda la página */
+                background: -webkit-gradient(linear, left top, right top, color-stop(30%, #eaebef), color-stop(30%, #ffffff)) !important;
+                background: -webkit-linear-gradient(left, #eaebef 30%, #ffffff 30%) !important;
+            }
+            .cv-container {
+                min-height: 29.7cm;
+                background: transparent !important;
+                width: 100%;
+                max-width: none;
+            }
+        }
+        ```
 
 ### 4. CSS
 *   Puedes usar CSS moderno para estilos de texto (colores, tamaños, negritas), padding y margin dentro de los bloques.
@@ -34,6 +88,7 @@ Tu plantilla HTML debe ser un archivo `.html` válido que use la sintaxis de Jin
 
 ### Datos Personales
 *   `{{ foto_url }}`: URL de la foto (base64). Usar en `<img>`.
+    *   **Importante**: Si no hay foto, esta variable estará vacía. Debes usar `{% if foto_url %}` para envolver la etiqueta `<img>` y **NO** mostrar ningún placeholder o círculo vacío si el usuario no subió foto.
 *   `{{ nombre }}`: Nombre completo.
 *   `{{ titulo }}`: Título profesional.
 *   `{{ email }}`: Correo electrónico (puede contener HTML seguro).
